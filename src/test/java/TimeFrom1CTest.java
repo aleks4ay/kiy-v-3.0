@@ -1,5 +1,4 @@
-import tools.DataControl;
-import tools.DateConverter;
+import kiyv.domain.tools.DateConverter;
 
 /**
  * Created by aser on 28.11.2019.

@@ -1,66 +1,43 @@
-CREATE TABLE clients
+/*CREATE TABLE worker
+(
+  id VARCHAR(9) PRIMARY KEY NOT NULL,
+  name VARCHAR
+);
+
+CREATE TABLE client
+(
+  id VARCHAR(9) PRIMARY KEY NOT NULL,
+  name VARCHAR
+);*/
+
+
+CREATE TABLE tmc
 (
   id VARCHAR(9) PRIMARY KEY NOT NULL,
   id_parent VARCHAR(9),
-  isfolder INTEGER,
-  descr1 VARCHAR,
-  descr2 VARCHAR,
-  phone VARCHAR(48),
-  inn VARCHAR(12),
-  num_certificate VARCHAR(12),
-  addr_fis VARCHAR,
-  addr_urid VARCHAR
+  code VARCHAR(5),
+  descr VARCHAR(50),
+  is_folder INTEGER,
+  descr_all VARCHAR(100),
+  type VARCHAR(9)
 );
 
-CREATE TABLE descriptions
+CREATE TABLE techno_item
 (
-  kod INTEGER PRIMARY KEY NOT NULL,
-  big_number INTEGER,
-  iddoc VARCHAR(9),
-  pos INTEGER,
-  id_tmc VARCHAR(9),
-  amount INTEGER,
-  descr_second VARCHAR,
-  size_a INTEGER,
-  size_b INTEGER,
-  size_c INTEGER,
-  embodiment VARCHAR(9)
-);
-
-CREATE TABLE invoice
-(
-  iddoc VARCHAR(9) PRIMARY KEY NOT NULL,
-  docno VARCHAR(10),
-  id_order VARCHAR(9),
-  time_invoice TIMESTAMP,
-  time22 BIGINT,
-  price NUMERIC(14,3)
-);
-
-CREATE TABLE manufacture
-(
-  id SERIAL PRIMARY KEY NOT NULL,
-  iddoc VARCHAR(9),
-  position INTEGER,
-  docno VARCHAR(10),
-  id_order VARCHAR(9),
-  time_manuf TIMESTAMP,
-  time21 BIGINT,
-  amount INTEGER,
-  id_tmc VARCHAR(9),
-  descr_second VARCHAR,
-  size_a INTEGER,
-  size_b INTEGER,
-  size_c INTEGER,
-  embodiment VARCHAR(9)
+  id VARCHAR(9) PRIMARY KEY NOT NULL,
+  id_parent VARCHAR(9),
+--   size_a INTEGER,
+  --   size_b INTEGER,
+  --   size_c INTEGER,
+  descr VARCHAR
 );
 
 CREATE TABLE orders
 (
-  big_number INTEGER PRIMARY KEY NOT NULL,
-  iddoc VARCHAR(9),
-  idclient VARCHAR(9),
-  idmanager VARCHAR(9),
+  iddoc VARCHAR(9) PRIMARY KEY NOT NULL,
+  big_number INTEGER,
+  id_client VARCHAR(9),
+  id_manager VARCHAR(9),
   duration INTEGER,
   docno VARCHAR(10),
   docno_manuf VARCHAR(10),
@@ -68,30 +45,36 @@ CREATE TABLE orders
   pos_count INTEGER,
   client_name VARCHAR,
   manager_name VARCHAR,
-  t_create TIMESTAMP,
-  t_factory TIMESTAMP,
-  t_end TIMESTAMP,
+  t_create TIMESTAMP WITHOUT TIME ZONE,
+  t_factory TIMESTAMP WITHOUT TIME ZONE,
+  t_end TIMESTAMP WITHOUT TIME ZONE,
   time22 BIGINT,
   price NUMERIC(14,3),
   payment NUMERIC(14,3),
-  time_manuf TIMESTAMP,
-  time_invoice TIMESTAMP,
+  time_manuf TIMESTAMP WITHOUT TIME ZONE,
+  time_invoice TIMESTAMP WITHOUT TIME ZONE,
   is_parsing INTEGER DEFAULT 0
 );
 
-CREATE TABLE set_technologichka
+
+CREATE TABLE descriptions
 (
-  id VARCHAR(9) PRIMARY KEY NOT NULL,
-  parentid VARCHAR(9),
-  descr VARCHAR,
+  id VARCHAR(13) PRIMARY KEY NOT NULL,
+  iddoc VARCHAR(9),
+  position INTEGER,
+  id_tmc VARCHAR(9),
+  quantity INTEGER,
+  descr_second VARCHAR,
   size_a INTEGER,
   size_b INTEGER,
-  size_c INTEGER
+  size_c INTEGER,
+  embodiment VARCHAR,
+  FOREIGN KEY (iddoc) REFERENCES orders (iddoc) ON DELETE CASCADE
 );
 
 CREATE TABLE statuses
 (
-  kod INTEGER PRIMARY KEY NOT NULL,
+  id VARCHAR(13) PRIMARY KEY NOT NULL,
   iddoc VARCHAR(9),
   time_0 BIGINT,
   time_1 BIGINT,
@@ -122,23 +105,44 @@ CREATE TABLE statuses
   status_index INTEGER,
   designer_name VARCHAR,
   is_technologichka INTEGER,
-  descr_first VARCHAR
+  descr_first VARCHAR,
+  is_parsing INTEGER,
+  FOREIGN KEY (id) REFERENCES descriptions (id) ON DELETE CASCADE,
+  FOREIGN KEY (iddoc) REFERENCES orders (iddoc) ON DELETE CASCADE
 );
 
-CREATE TABLE tmc
+
+CREATE TABLE invoice
 (
-  id VARCHAR(9) PRIMARY KEY NOT NULL,
-  id_parent VARCHAR(9),
-  code VARCHAR(5),
-  descr VARCHAR(50),
-  is_folder INTEGER,
-  descr_all VARCHAR(100),
-  type VARCHAR(9)
+  iddoc VARCHAR(9) PRIMARY KEY NOT NULL,
+  docno VARCHAR(10),
+  id_order VARCHAR(9),
+  time_invoice TIMESTAMP WITHOUT TIME ZONE,
+  time22 BIGINT,
+  price NUMERIC(14,3)
 );
 
+CREATE TABLE manufacture
+(
+  id VARCHAR(13) PRIMARY KEY NOT NULL,
+  iddoc VARCHAR(9),
+  position INTEGER,
+  docno VARCHAR(10),
+  id_order VARCHAR(9),
+  time_manuf TIMESTAMP WITHOUT TIME ZONE,
+  time21 BIGINT,
+  quantity INTEGER,
+  id_tmc VARCHAR(9),
+  descr_second VARCHAR,
+  size_a INTEGER,
+  size_b INTEGER,
+  size_c INTEGER,
+  embodiment VARCHAR(9),
+  FOREIGN KEY (id_order) REFERENCES orders (iddoc) ON DELETE CASCADE
+);
 
 CREATE VIEW order_view (
-    kod, big_number, pos, amount, descr_second, size_a, size_b, size_c,
+    id, big_number, pos, quantity, descr_second, size_a, size_b, size_c,
     iddoc, duration, docno, docno2, docno3,
     pos_count, t_create, t_factory, t_end, t_invoice,  manager, client,
     type_index, status_index, is_technologichka, designer, descr_first,
@@ -147,7 +151,7 @@ CREATE VIEW order_view (
     time_20, time_21, time_22, time_23, time_24, price, payment, is_parsing
 )
 AS SELECT
-     d.kod, d.big_number, d.pos, d.amount, d.descr_second, d.size_a, d.size_b, d.size_c,
+     d.id, o.big_number, d.position, d.quantity, d.descr_second, d.size_a, d.size_b, d.size_c,
      o.iddoc, o.duration, o.docno, o.docno_manuf, o.docno_invoice,
      o.pos_count, o.t_create, o.t_factory, o.t_end, o.time22, o.manager_name, o.client_name,
      t.type_index, t.status_index, t.is_technologichka, t.designer_name, t.descr_first,
@@ -155,16 +159,18 @@ AS SELECT
      t.time_10, t.time_11, t.time_12, t.time_13, t.time_14, t.time_15, t.time_16, t.time_17, t.time_18, t.time_19,
      t.time_20, t.time_21, t.time_22, t.time_23, t.time_24, o.price, o.payment, t.is_parsing
    from orders o, descriptions d, statuses t
-   WHERE o.IDDOC = d.IDDOC and d.kod = t.kod
-   ORDER BY d.kod;
+   WHERE o.IDDOC = d.IDDOC and d.id = t.id
+   ORDER BY d.id;
 
 CREATE VIEW manufacture_view (
-    id, iddoc, docno, pos, kod, id_tmc, amount, id_order, time21, descr_second, size_a, size_b, size_c, embodiment
+    id, iddoc, docno, pos, id, id_tmc, quantity, id_order, time21, descr_second, size_a, size_b, size_c, embodiment
 )
 AS SELECT
-     m.id, m.iddoc, m.docno, m.position, d.kod, m.id_tmc, m.amount, m.id_order, m.time21, m.descr_second, m.size_a, m.size_b, m.size_c, m.embodiment
+     m.id, m.iddoc, m.docno, m.position, d.id, m.id_tmc, m.quantity, m.id_order, m.time21, m.descr_second, m.size_a,
+     m.size_b, m.size_c, m.embodiment
    from descriptions d, manufacture m
-   WHERE m.id_order = d.iddoc AND m.id_tmc = d.id_tmc AND m.amount = d.amount AND m.size_a = d.size_a AND m.size_b = d.size_b AND m.size_c = d.size_c
+   WHERE m.id_order = d.iddoc AND m.id_tmc = d.id_tmc AND m.quantity = d.quantity AND m.size_a = d.size_a AND
+         m.size_b = d.size_b AND m.size_c = d.size_c
    ORDER BY m.id, m.iddoc;
 
 

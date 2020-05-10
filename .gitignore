@@ -3,7 +3,7 @@ lib/*
 out
 target
 *.iml
-log
+kiyv.domain.model.log
 *.patch
 
 

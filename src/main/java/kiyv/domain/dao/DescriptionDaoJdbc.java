@@ -61,7 +61,7 @@ public class DescriptionDaoJdbc implements DescriptionDao {
 
             while (rs.next()) {
                 String id = rs.getString("id");
-                log.debug("return new 'Description'. Code = '{}'.", id);
+//                log.debug("return new 'Description'. Code = '{}'.", id);
 
                 Description description = new Description(id, rs.getString("iddoc"), rs.getInt("position"),
                         rs.getString("id_tmc"), rs.getInt("quantity"), rs.getString("descr_second"),

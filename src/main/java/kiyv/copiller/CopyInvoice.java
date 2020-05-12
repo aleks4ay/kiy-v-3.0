@@ -72,7 +72,7 @@ public class CopyInvoice {
                 if (!oldInvoice.containsKey(idDoc)) {
                     listNewInvoice.add(invoice);
                 } else if (!oldInvoice.get(idDoc).equals(invoice)) {
-                    log.info("UPDATE Manufacture with Id = '{}', '{}'. Different fields: {}.",
+                    log.info("UPDATE Invoice with Id = '{}', '{}'. Different fields: {}.",
                             invoice.getIdDoc(),
                             invoice.getDocNumber(),
                             invoice.getDifferences(oldInvoice.get(idDoc))
@@ -87,20 +87,20 @@ public class CopyInvoice {
         }
 
         if (listNewInvoice.size() > 0) {
-            log.info("Save to DataBase. Must be added {} new Manufactures.", listNewInvoice.size());
+            log.info("Save to DataBase. Must be added {} new Invoices.", listNewInvoice.size());
             invoiceDao.saveAll(listNewInvoice);
             List<Invoice> invoicesAfterFilter = sumInvoiceWithTheSameOrder(listNewInvoice);
             orderDao.savePraceFromInvoice(invoicesAfterFilter, 5.0);
             statusDao.saveFromInvoice(invoicesAfterFilter);
         }
         if (listUpdatingInvoice.size() > 0) {
-            log.info("Write change to DataBase. Must be updated {} Manufactures.", listUpdatingInvoice.size());
+            log.info("Write change to DataBase. Must be updated {} Invoices.", listUpdatingInvoice.size());
             invoiceDao.updateAll(listUpdatingInvoice);
         }
         if (oldInvoice.size() > 0) {
-            log.info("Delete old Manufactures from DataBase. Must be deleted {} Manufactures.", oldInvoice.size());
+            log.info("Delete old Invoices from DataBase. Must be deleted {} Invoices.", oldInvoice.size());
             for (Invoice invoice : oldInvoice.values()) {
-                log.info("DELETE Manufacture with id '{}', '{}'.", invoice.getIdDoc(), invoice.getDocNumber());
+                log.info("DELETE Invoice with id '{}', '{}'.", invoice.getIdDoc(), invoice.getDocNumber());
             }
             invoiceDao.deleteAll(oldInvoice.keySet());
         }

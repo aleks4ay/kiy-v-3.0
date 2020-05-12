@@ -41,9 +41,9 @@ public class InvoiceDaoJdbc implements InvoiceDao {
             ResultSet rs = statement.executeQuery();
             rs.next();
 
-            log.debug("return new 'Invoice'. Id = {}.", id);
+//            log.debug("return new 'Invoice'. Id = {}.", id);
 
-            return new Invoice(id, rs.getString("iddoc"), rs.getString("id_order"), rs.getTimestamp("time_invoice"),
+            return new Invoice(id, rs.getString("docno"), rs.getString("id_order"), rs.getTimestamp("time_invoice"),
                     rs.getLong("time22"), rs.getDouble("price"));
 
         } catch (SQLException e) {
@@ -63,9 +63,9 @@ public class InvoiceDaoJdbc implements InvoiceDao {
 
             while (rs.next()) {
                 String id = rs.getString("iddoc");
-                log.debug("return new 'Invoice'. Id = {}.", id);
+//                log.debug("return new 'Invoice'. Id = {}.", id);
 
-                Invoice invoice = new Invoice(id, rs.getString("iddoc"), rs.getString("id_order"), rs.getTimestamp("time_invoice"),
+                Invoice invoice = new Invoice(id, rs.getString("docno"), rs.getString("id_order"), rs.getTimestamp("time_invoice"),
                         rs.getLong("time22"), rs.getDouble("price"));
                 result.add(invoice);
             }

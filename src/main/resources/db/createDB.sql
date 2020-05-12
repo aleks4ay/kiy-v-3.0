@@ -142,7 +142,7 @@ CREATE TABLE manufacture
 );
 
 CREATE VIEW order_view (
-    id, big_number, pos, quantity, descr_second, size_a, size_b, size_c,
+    kod, big_number, pos, amount, descr_second, size_a, size_b, size_c,
     iddoc, duration, docno, docno2, docno3,
     pos_count, t_create, t_factory, t_end, t_invoice,  manager, client,
     type_index, status_index, is_technologichka, designer, descr_first,
@@ -163,11 +163,11 @@ AS SELECT
    ORDER BY d.id;
 
 CREATE VIEW manufacture_view (
-    id, iddoc, docno, pos, id, id_tmc, quantity, id_order, time21, descr_second, size_a, size_b, size_c, embodiment
+    id, iddoc, docno, pos, kod, id_tmc, amount, id_order, time_manuf, time21, descr_second, size_a, size_b, size_c, embodiment
 )
 AS SELECT
-     m.id, m.iddoc, m.docno, m.position, d.id, m.id_tmc, m.quantity, m.id_order, m.time21, m.descr_second, m.size_a,
-     m.size_b, m.size_c, m.embodiment
+     m.id, m.iddoc, m.docno, m.position, d.id, m.id_tmc, m.quantity, m.id_order, m.time_manuf, m.time21,
+     m.descr_second, m.size_a, m.size_b, m.size_c, m.embodiment
    from descriptions d, manufacture m
    WHERE m.id_order = d.iddoc AND m.id_tmc = d.id_tmc AND m.quantity = d.quantity AND m.size_a = d.size_a AND
          m.size_b = d.size_b AND m.size_c = d.size_c

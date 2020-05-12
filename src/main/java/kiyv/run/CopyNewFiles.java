@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
+import kiyv.domain.tools.DataControl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -84,8 +85,8 @@ public class CopyNewFiles {
             }
 
             if (needWrite) {
-//                DataControl.writeTimeChange();
-//                DataControl.writeTimeChangeFrom1C();
+                DataControl.writeTimeChange();
+                DataControl.writeTimeChangeFrom1C();
             }
 
             long t2 = System.currentTimeMillis();

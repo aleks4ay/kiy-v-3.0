@@ -66,7 +66,7 @@ public class ManufDaoJdbc implements ManufDao {
 
             while (rs.next()) {
                 String id = rs.getString("id");
-                log.debug("return new 'Manufacture'. Id = {}.", id);
+//                log.debug("return new 'Manufacture'. Id = {}.", id);
 
                 Manufacture manufacture = new Manufacture(id, rs.getString("iddoc"), rs.getInt("position"),
                         rs.getString("docno"), rs.getString("id_order"), rs.getTimestamp("time_manuf"), rs.getLong("time21"),

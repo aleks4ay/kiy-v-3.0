@@ -76,7 +76,7 @@ public class OrderDaoJdbc implements OrderDao {
 
             while (rs.next()) {
                 int bigNumber = rs.getInt("big_number");
-                log.debug("return new 'Order'. bigNumber = {}.", bigNumber);
+//                log.debug("return new 'Order'. bigNumber = {}.", bigNumber);
 
                 Order order = new Order(bigNumber, rs.getString("iddoc"), rs.getString("id_client"), rs.getString("id_manager"),
                         rs.getInt("duration"), rs.getString("docno"), rs.getInt("pos_count"), rs.getString("client_name"),

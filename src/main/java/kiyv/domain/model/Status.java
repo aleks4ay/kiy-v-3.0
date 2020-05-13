@@ -103,17 +103,19 @@ public class Status {
         return this;
     }
 
+
     @Override
     public String toString() {
         return "Status{" +
-                "statusTimeList=" + Arrays.toString(statusTimeList) +
-                ", id='" + id + '\'' +
+                "id='" + id + '\'' +
                 ", idDoc='" + idDoc + '\'' +
                 ", typeIndex=" + typeIndex +
                 ", statusIndex=" + statusIndex +
                 ", designer='" + designer + '\'' +
                 ", descrFirst='" + descrFirst + '\'' +
+                ", isTechno=" + isTechno +
                 ", isParsing=" + isParsing +
+                ", statusTimeList=" + Arrays.toString(statusTimeList) +
                 '}';
     }
 }

@@ -69,7 +69,7 @@ public class StatusDaoJdbc implements StatusDao {
                 statusTimeList[i] = rs.getLong("time_" + i);
             }
             return new Status(id, rs.getString("iddoc"), rs.getInt("type_index"), rs.getInt("status_index"),
-                    rs.getString("designer"), rs.getString("descr_first"), rs.getInt("is_technologichka"),
+                    rs.getString("designer_name"), rs.getString("descr_first"), rs.getInt("is_technologichka"),
                     rs.getInt("is_parsing"), statusTimeList);
 
         } catch (SQLException e) {
@@ -89,14 +89,14 @@ public class StatusDaoJdbc implements StatusDao {
 
             while (rs.next()) {
                 String id = rs.getString("id");
-                log.debug("return new 'Status'. Id = '{}'.", id);
+//                log.debug("return new 'Status'. Id = '{}'.", id);
 
                 long[] statusTimeList = new long[25];
                 for (int i = 0; i < 25; i++) {
                     statusTimeList[i] = rs.getLong("time_" + i);
                 }
                 Status status = new Status(id, rs.getString("iddoc"), rs.getInt("type_index"), rs.getInt("status_index"),
-                        rs.getString("designer"), rs.getString("descr_first"), rs.getInt("is_technologichka"),
+                        rs.getString("designer_name"), rs.getString("descr_first"), rs.getInt("is_technologichka"),
                         rs.getInt("is_parsing"), statusTimeList);
 
                 result.add(status);

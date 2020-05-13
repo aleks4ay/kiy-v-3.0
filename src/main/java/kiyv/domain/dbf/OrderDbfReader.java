@@ -39,9 +39,9 @@ public class OrderDbfReader implements OrderDbf {
                 if (date == null) {
                     dateToFactory = null;
                 }
-/*                else if (date.getTime() < 1560805200000L) {
+                else if (date.getTime() < 1560805200000L) {
                         continue;
-                    }*/
+                    }
                 else {
                     dateToFactory = new Timestamp(date.getTime());
                 }

@@ -52,8 +52,7 @@ CREATE TABLE orders
   price NUMERIC(14,3),
   payment NUMERIC(14,3),
   time_manuf TIMESTAMP WITHOUT TIME ZONE,
-  time_invoice TIMESTAMP WITHOUT TIME ZONE,
-  is_parsing INTEGER DEFAULT 0
+  time_invoice TIMESTAMP WITHOUT TIME ZONE
 );
 
 
@@ -64,7 +63,7 @@ CREATE TABLE descriptions
   position INTEGER,
   id_tmc VARCHAR(9),
   quantity INTEGER,
-  descr_second VARCHAR,
+  descr_second VARCHAR(300),
   size_a INTEGER,
   size_b INTEGER,
   size_c INTEGER,
@@ -106,7 +105,7 @@ CREATE TABLE statuses
   designer_name VARCHAR,
   is_technologichka INTEGER,
   descr_first VARCHAR,
-  is_parsing INTEGER,
+  is_parsing INTEGER DEFAULT 0,
   FOREIGN KEY (id) REFERENCES descriptions (id) ON DELETE CASCADE,
   FOREIGN KEY (iddoc) REFERENCES orders (iddoc) ON DELETE CASCADE
 );

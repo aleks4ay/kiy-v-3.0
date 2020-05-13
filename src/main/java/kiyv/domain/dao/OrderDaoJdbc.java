@@ -31,12 +31,12 @@ public class OrderDaoJdbc implements OrderDao {
 
     private static final String SQL_SAVE = "INSERT INTO orders(big_number, id_client, id_manager, duration, docno, " +
             "docno_manuf, docno_invoice, pos_count, client_name, manager_name, t_create, t_factory, t_end, time22, " +
-            "price, payment, time_manuf, time_invoice, is_parsing, iddoc) VALUES " +
-            "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
+            "price, payment, time_manuf, time_invoice, iddoc) VALUES " +
+            "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
 
     private static final String SQL_UPDATE = "UPDATE orders SET big_number=?, id_client=?, id_manager=?, duration=?, docno=?, " +
             "docno_manuf=?, docno_invoice=?, pos_count=?, client_name=?, manager_name=?, t_create=?, t_factory=?, t_end=?, " +
-            "time22=?, price=?, payment=?, time_manuf=?, time_invoice=?, is_parsing=? WHERE iddoc = ?;";
+            "time22=?, price=?, payment=?, time_manuf=?, time_invoice=? WHERE iddoc = ?;";
 
     public OrderDaoJdbc(Connection conn) {
         connPostgres = conn;
@@ -142,7 +142,7 @@ public class OrderDaoJdbc implements OrderDao {
 
                 log.debug("Prepared 'Order' to batch. SQL = {}. {}.", sql, order);
 
-                ps.setString(20, order.getIdDoc());
+                ps.setString(19, order.getIdDoc());
                 ps.setInt(1, order.getBigNumber());
                 ps.setString(2, order.getIdClient());
                 ps.setString(3, order.getIdManager());
@@ -165,7 +165,6 @@ public class OrderDaoJdbc implements OrderDao {
                 ps.setDouble(16, order.getPayment());
                 ps.setTimestamp(17, order.getTimeManuf());
                 ps.setTimestamp(18, order.getTimeInvoice());
-                ps.setInt(19, order.getIsParsing());
 
                 ps.addBatch();
                 int[] numberOfUpdates = ps.executeBatch();

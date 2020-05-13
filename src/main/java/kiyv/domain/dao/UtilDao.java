@@ -23,6 +23,7 @@ public class UtilDao {
     private static String driverPostgres = null;
     private static String urlDbf = null;
     private static String urlPostgres = null;
+    private static String urlPostgresFrom = null;
     private static String urlTest = null;
     private static String user = null;
     private static String userTest = null;
@@ -40,6 +41,7 @@ public class UtilDao {
 
             driverPostgres = properties.getProperty("database.driverClassName");
             urlPostgres = properties.getProperty("database.url");
+            urlPostgresFrom = properties.getProperty("urlWhereFromCopy");
             user = properties.getProperty("database.username");
             password = properties.getProperty("database.password");
             log.debug("Loaded properties as Stream: dbf.driverClassName = {}, dbf.url = {}, database.driverClassName = {}, " +
@@ -75,6 +77,19 @@ public class UtilDao {
             log.debug("Created connection for 'postgres'. Url= {}, user= {}.", urlPostgres, user);
         } catch (SQLException | ClassNotFoundException e) {
             log.warn("Exception during create connection for 'postgres' url= {}, user= {}.", urlPostgres, user, e);
+        }
+        return connPostgres;
+    }
+
+    public static Connection getConnPostgresFrom() {
+        try {
+            Class.forName(driverPostgres);
+            connPostgres = DriverManager.getConnection(urlPostgresFrom, user, password);
+            connPostgres.setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
+            connPostgres.setAutoCommit(false);
+            log.debug("Created connection for 'postgres'. Url= {}, user= {}.", urlPostgresFrom, user);
+        } catch (SQLException | ClassNotFoundException e) {
+            log.warn("Exception during create connection for 'postgres' url= {}, user= {}.", urlPostgresFrom, user, e);
         }
         return connPostgres;
     }

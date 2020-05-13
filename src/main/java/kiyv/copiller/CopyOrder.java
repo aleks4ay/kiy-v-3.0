@@ -67,7 +67,6 @@ public class CopyOrder {
             if (mapJournal.containsKey(idOrder)) {
 
                 Journal journal = mapJournal.get(idOrder);
-//                int bigNumber = journal.getBigNumber();
                 String docNumber = journal.getDocNumber();
 
                 Timestamp dateCreate = journal.getDateCreate();
@@ -79,7 +78,6 @@ public class CopyOrder {
                 if ( dateToFactory == null) {
                     dateToFactory = dateCreate;
                 }
-//                log.debug("dateToFactory.getTime() = {} must be > 1560805200000L", dateToFactory.getTime());
 /*                if (dateToFactory.getTime() < 1560805200000L) {
                     continue;
                 }*/

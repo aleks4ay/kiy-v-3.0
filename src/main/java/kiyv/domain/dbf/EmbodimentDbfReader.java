@@ -14,12 +14,12 @@ import static kiyv.log.ClassNameUtil.getCurrentClassName;
 
 public class EmbodimentDbfReader implements EmbodimentDbf {
 
-    private static Connection connDbf;
+    private Connection connDbf;
     private static final Logger log = LoggerFactory.getLogger(getCurrentClassName());
     private static final String SQL_GET_EMBODIMENT = "select ID, DESCR from SC14716;";
 
-    public EmbodimentDbfReader() {
-        connDbf = UtilDao.getConnDbf();
+    public EmbodimentDbfReader(Connection connDbf) {
+        this.connDbf = connDbf;
         log.debug("Get connection to 'dbf-files' 1C from {}.", EmbodimentDbfReader.class);
     }
 

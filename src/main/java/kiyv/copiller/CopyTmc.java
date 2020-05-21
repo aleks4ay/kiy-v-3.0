@@ -9,6 +9,7 @@ import kiyv.domain.dbf.TmcDbf;
 import kiyv.domain.dbf.TmcDbfReader;
 import kiyv.domain.model.Tmc;
 
+import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -18,27 +19,22 @@ import static kiyv.log.ClassNameUtil.getCurrentClassName;
 
 public class CopyTmc {
 
-    private static final CopyTmc copyTmc = new CopyTmc();
-    private static final TmcDao tmcDao = new TmcDaoJdbc(UtilDao.getConnPostgres());
-    private static final TmcDbf tmcDbfReader = new TmcDbfReader();
     private static final Logger log = LoggerFactory.getLogger(getCurrentClassName());
 
-    private CopyTmc() {
-    }
-
-    public static CopyTmc getInstance() {
-        return copyTmc;
-    }
-
     public static void main(String[] args) {
-
-        CopyTmc.getInstance().doCopyNewRecord();
-
+        new CopyTmc().doCopyNewRecord();
     }
 
     public void doCopyNewRecord() {
         long start = System.currentTimeMillis();
         log.info("Start writing 'T M C'.");
+
+        UtilDao utilDao = new UtilDao();
+        Connection connPostgres = utilDao.getConnPostgres();
+        Connection connDbf = utilDao.getConnDbf();
+
+        TmcDao tmcDao = new TmcDaoJdbc(connPostgres);
+        TmcDbf tmcDbfReader = new TmcDbfReader(connDbf);
 
         List<Tmc> listNewTmc = new ArrayList<>();
         List<Tmc> listUpdatingTmc = new ArrayList<>();
@@ -77,6 +73,9 @@ public class CopyTmc {
 
         long end = System.currentTimeMillis();
         log.info("End writing 'T M C'. Time = {} c.", (double)(end-start)/1000);
+
+        utilDao.closeConnection(connPostgres);
+        utilDao.closeConnection(connDbf);
     }
 }
 

@@ -14,12 +14,12 @@ import static kiyv.log.ClassNameUtil.getCurrentClassName;
 
 public class WorkerDbfReader implements WorkerDbf {
 
-    private static Connection connDbf;
+    private Connection connDbf;
     private static final Logger log = LoggerFactory.getLogger(getCurrentClassName());
     private static final String SQL_GET_WORKER = "select ID, DESCR from SC1670;";
 
-    public WorkerDbfReader() {
-        connDbf = UtilDao.getConnDbf();
+    public WorkerDbfReader(Connection connDbf) {
+        this.connDbf = connDbf;
         log.debug("Get connection to 'dbf-files' 1C from {}.", WorkerDbfReader.class);
     }
 

@@ -19,7 +19,7 @@ import static kiyv.log.ClassNameUtil.getCurrentClassName;
 
 public class StatusDaoJdbc implements StatusDao {
 
-    private static Connection connPostgres;
+    private Connection connPostgres;
     private static final Logger log = LoggerFactory.getLogger(getCurrentClassName());
     private static final String SQL_INSERT_BEGIN_VALUE = "INSERT INTO statuses (id, iddoc, time_0, time_1, type_index, " +
             "status_index, is_technologichka, descr_first)  VALUES (?, ?, ?, ?, ?, ?, ?, ?);";
@@ -48,7 +48,7 @@ public class StatusDaoJdbc implements StatusDao {
             "is_parsing=? WHERE id=?;";
 
     public StatusDaoJdbc(Connection conn) {
-        connPostgres = conn;
+        this.connPostgres = conn;
         log.debug("Get connection to PostgreSQL from {}.", UtilDao.class);
     }
 

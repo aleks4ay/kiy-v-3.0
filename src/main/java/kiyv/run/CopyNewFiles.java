@@ -7,7 +7,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.sql.SQLException;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
@@ -44,43 +43,42 @@ public class CopyNewFiles {
 
     public static Map<String, Boolean> update() throws SQLException, IOException, ClassNotFoundException {
 
-        Map<String, Boolean> mapNewFiles = new HashMap<>();
-        boolean needWrite = false;
+        boolean needWrite;
 
         while (true) {
             log.info("Start copy filas from 1C.");
             long t1 = System.currentTimeMillis();
             needWrite = false;
 
-            boolean isNewClient = copyFiles("SC172");
+            copyFiles("SC172");
+            copyFiles("SC1670");
+            copyFiles("1SJOURN");
             boolean isNewTmc = copyFiles("SC302");
             boolean isNewEmbodiment = copyFiles("SC14716");
-            boolean isNewManager = copyFiles("SC1670");
-            boolean isNewJournal = copyFiles("1SJOURN");
             boolean isNewOrder = copyFiles("DH1898");
             boolean isNewDescription = copyFiles("DT1898");
             boolean isNewManuf = copyFiles("DT2728");
             boolean isNewInvoice = copyFiles("DH3592");
 
             if (isNewTmc) {
-                CopyTmc.getInstance().doCopyNewRecord();
-                CopyTmcTechno.getInstance().doCopyNewRecord();
+                new CopyTmc().doCopyNewRecord();
+                new CopyTmcTechno().doCopyNewRecord();
                 needWrite = true;
             }
             if (isNewOrder) {
-                CopyOrder.getInstance().doCopyNewRecord();
+                new CopyOrder().doCopyNewRecord();
                 needWrite = true;
             }
             if (isNewDescription) {
-                CopyDescription.getInstance().doCopyNewRecord();
+                new CopyDescription().doCopyNewRecord();
                 needWrite = true;
             }
             if (isNewManuf) {
-                CopyManuf.getInstance().doCopyNewRecord();
+                new CopyManuf().doCopyNewRecord();
                 needWrite = true;
             }
             if (isNewInvoice) {
-                CopyInvoice.getInstance().doCopyNewRecord();
+                new CopyInvoice().doCopyNewRecord();
                 needWrite = true;
             }
 

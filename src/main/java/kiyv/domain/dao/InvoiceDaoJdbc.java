@@ -14,7 +14,7 @@ import static kiyv.log.ClassNameUtil.getCurrentClassName;
 
 public class InvoiceDaoJdbc implements InvoiceDao {
 
-    private static Connection connPostgres;
+    private Connection connPostgres;
     private static final Logger log = LoggerFactory.getLogger(getCurrentClassName());
     private static final String SQL_GET_ONE = "SELECT * FROM invoice WHERE iddoc = ?;";
     private static final String SQL_GET_ALL = "SELECT * FROM invoice;";
@@ -27,7 +27,7 @@ public class InvoiceDaoJdbc implements InvoiceDao {
             " price=? WHERE iddoc=?;";
 
     public InvoiceDaoJdbc(Connection conn) {
-        connPostgres = conn;
+        this.connPostgres = conn;
         log.debug("Get connection to PostgreSQL from {}.", UtilDao.class);
     }
 

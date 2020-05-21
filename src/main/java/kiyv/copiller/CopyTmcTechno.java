@@ -11,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -19,27 +20,24 @@ import static kiyv.log.ClassNameUtil.getCurrentClassName;
 
 public class CopyTmcTechno {
 
-    private static final CopyTmcTechno copyTmc = new CopyTmcTechno();
-    private static final TmcDao tmcDao = new TmcDaoJdbc(UtilDao.getConnPostgres());
-    private static final TmcDao tmcDaoTechno = new TmcDaoTechnoJdbc(UtilDao.getConnPostgres());
     private static final Logger log = LoggerFactory.getLogger(getCurrentClassName());
 
-    private CopyTmcTechno() {
-    }
-
-    public static CopyTmcTechno getInstance() {
-        return copyTmc;
-    }
 
     public static void main(String[] args) {
 
-        CopyTmcTechno.getInstance().doCopyNewRecord();
+        new CopyTmcTechno().doCopyNewRecord();
 
     }
 
     public void doCopyNewRecord() {
         long start = System.currentTimeMillis();
         log.info("Start writing 'T M C-techno'.");
+
+        UtilDao utilDao = new UtilDao();
+        Connection connPostgres = utilDao.getConnPostgres();
+
+        TmcDao tmcDao = new TmcDaoJdbc(connPostgres);
+        TmcDao tmcDaoTechno = new TmcDaoTechnoJdbc(connPostgres);
 
         List<Tmc> listNewTmc = new ArrayList<>();
         List<Tmc> listUpdatingTmc = new ArrayList<>();
@@ -78,6 +76,8 @@ public class CopyTmcTechno {
 
         long end = System.currentTimeMillis();
         log.info("End writing 'T M C-techno'. Time = {} c.", (double)(end-start)/1000);
+
+        utilDao.closeConnection(connPostgres);
     }
 
     private List<Tmc> doTechnoFilter(List<Tmc> allTmcList) {

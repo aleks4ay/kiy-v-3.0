@@ -9,6 +9,7 @@ import kiyv.domain.tools.DateConverter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.sql.Connection;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
@@ -19,32 +20,38 @@ import static kiyv.log.ClassNameUtil.getCurrentClassName;
 
 public class CopyDescription {
 
-    private static final CopyDescription copyDescription = new CopyDescription();
-    private static final OrderDao orderDao = new OrderDaoJdbc(UtilDao.getConnPostgres());
-    private static final TmcDao tmcDao = new TmcDaoJdbc(UtilDao.getConnPostgres());
-    private static final TmcDao tmcDaoTechno = new TmcDaoTechnoJdbc(UtilDao.getConnPostgres());
-    private static final DescriptionDao descriptionDao = new DescriptionDaoJdbc(UtilDao.getConnPostgres());
-    private static final StatusDao statusDao = new StatusDaoJdbc(UtilDao.getConnPostgres());
-    private static final DescriptionDbf descriptionDbfReader = new DescriptionDbfReader();
-    private static final EmbodimentDbf embodimentDbfReader = new EmbodimentDbfReader();
+//    private static final CopyDescription copyDescription = new CopyDescription();
+//    private static final OrderDao orderDao = new OrderDaoJdbc(UtilDao.getConnPostgres());
+//    private static final TmcDao tmcDao = new TmcDaoJdbc(UtilDao.getConnPostgres());
+//    private static final TmcDao tmcDaoTechno = new TmcDaoTechnoJdbc(UtilDao.getConnPostgres());
+//    private static final DescriptionDao descriptionDao = new DescriptionDaoJdbc(UtilDao.getConnPostgres());
+//    private static final StatusDao statusDao = new StatusDaoJdbc(UtilDao.getConnPostgres());
+//    private static final DescriptionDbf descriptionDbfReader = new DescriptionDbfReader();
+//    private static final EmbodimentDbf embodimentDbfReader = new EmbodimentDbfReader();
     private static final Logger log = LoggerFactory.getLogger(getCurrentClassName());
-
-    private CopyDescription() {
-    }
-
-    public static CopyDescription getInstance() {
-        return copyDescription;
-    }
 
     public static void main(String[] args) {
 
-        CopyDescription.getInstance().doCopyNewRecord();
+        new CopyDescription().doCopyNewRecord();
 
     }
 
     public void doCopyNewRecord() {
         long start = System.currentTimeMillis();
         log.info("Start writing 'D E S C R I P T I O N'.");
+
+        UtilDao utilDao = new UtilDao();
+        Connection connPostgres = utilDao.getConnPostgres();
+        Connection connDbf = utilDao.getConnDbf();
+
+        OrderDao orderDao = new OrderDaoJdbc(connPostgres);
+        TmcDao tmcDao = new TmcDaoJdbc(connPostgres);
+        TmcDao tmcDaoTechno = new TmcDaoTechnoJdbc(connPostgres);
+        DescriptionDao descriptionDao = new DescriptionDaoJdbc(connPostgres);
+        StatusDao statusDao = new StatusDaoJdbc(connPostgres);
+
+        DescriptionDbf descriptionDbfReader = new DescriptionDbfReader(connDbf);
+        EmbodimentDbf embodimentDbfReader = new EmbodimentDbfReader(connDbf);
 
         Map<String, String> mapEmbodiment = embodimentDbfReader.getAll();
 //        List<String> idDocList = orderDao.getAllId();
@@ -145,5 +152,8 @@ public class CopyDescription {
 
         long end = System.currentTimeMillis();
         log.info("End writing 'D E S C R I P T I O N'. Time = {} c.", (double)(end-start)/1000);
+
+        utilDao.closeConnection(connPostgres);
+        utilDao.closeConnection(connDbf);
     }
 }

@@ -15,12 +15,12 @@ import static kiyv.log.ClassNameUtil.getCurrentClassName;
 
 public class TmcDbfReader implements TmcDbf {
 
-    private static Connection connDbf;
+    private Connection connDbf;
     private static final Logger log = LoggerFactory.getLogger(getCurrentClassName());
     private static final String SQL_GET_TMC = "select ID, PARENTID, CODE, DESCR, ISFOLDER, SP276, SP277 from SC302;";
 
-    public TmcDbfReader() {
-        connDbf = UtilDao.getConnDbf();
+    public TmcDbfReader(Connection connDbf) {
+        this.connDbf = connDbf;
         log.debug("Get connection to 'dbf-files' 1C from {}.", TmcDbfReader.class);
     }
 
@@ -47,7 +47,7 @@ public class TmcDbfReader implements TmcDbf {
                     descr = new String(bytes, "Windows-1251");
                 }
                 else {
-                    descr = "-";
+                    descr = "";
                 }
 
                 if (descrAll != null) {
@@ -55,7 +55,7 @@ public class TmcDbfReader implements TmcDbf {
                     descrAll = new String(bytes, "Windows-1251");
                 }
                 else {
-                    descrAll = "-";
+                    descrAll = "";
                 }
 
                 listTmc.add(new Tmc(id, parentId, code, descr, isFolder, descrAll, type));

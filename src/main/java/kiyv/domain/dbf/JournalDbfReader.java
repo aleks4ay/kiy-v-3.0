@@ -17,13 +17,13 @@ import static kiyv.log.ClassNameUtil.getCurrentClassName;
 
 public class JournalDbfReader implements JournalDbf {
 
-    private static Connection connDbf;
+    private Connection connDbf;
     private static final Logger log = LoggerFactory.getLogger(getCurrentClassName());
     private static final String SQL_GET_JOURNAL = "SELECT IDDOC, DOCNO, DATE, TIME " +
             "from 1SJOURN WHERE YEAR (DATE) > 2018 AND CLOSED <> 4;"; //AND IDDOCDEF = ' 1GQ'
 
-    public JournalDbfReader() {
-        connDbf = UtilDao.getConnDbf();
+    public JournalDbfReader(Connection connDbf) {
+        this.connDbf = connDbf;
         log.debug("Get connection to 'dbf-files' 1C from {}.", JournalDbfReader.class);
     }
 

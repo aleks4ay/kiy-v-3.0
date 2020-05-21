@@ -13,13 +13,13 @@ import static kiyv.log.ClassNameUtil.getCurrentClassName;
 
 public class ManufDbfReader implements ManufDbf {
 
-    private static Connection connDbf;
+    private Connection connDbf;
     private static final Logger log = LoggerFactory.getLogger(getCurrentClassName());
     private static final String SQL_GET_MANUFACTURE = "SELECT IDDOC, SP2722, LINENO, SP2725, " +
             "SP2721, SP14726, SP14722, SP14723, SP14724, SP14725 from DT2728 WHERE  SP2722 <> '     0';";
 
-    public ManufDbfReader() {
-        connDbf = UtilDao.getConnDbf();
+    public ManufDbfReader(Connection connDbf) {
+        this.connDbf = connDbf;
         log.debug("Get connection to 'dbf-files' 1C from {}.", ManufDbfReader.class);
     }
 

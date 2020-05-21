@@ -7,6 +7,7 @@ import kiyv.domain.model.Journal;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.sql.Connection;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -18,31 +19,28 @@ import static kiyv.log.ClassNameUtil.getCurrentClassName;
 
 public class CopyInvoice {
 
-    private static final CopyInvoice copyInvoice = new CopyInvoice();
     private static final Logger log = LoggerFactory.getLogger(getCurrentClassName());
-
-    private static final StatusDao statusDao = new StatusDaoJdbc(UtilDao.getConnPostgres());
-    private static final InvoiceDao invoiceDao = new InvoiceDaoJdbc(UtilDao.getConnPostgres());
-    private static final OrderDao orderDao = new OrderDaoJdbc(UtilDao.getConnPostgres());
-    private static final JournalDbf journalDbfReader = new JournalDbfReader();
-    private static final InvoiceDbf invoiceDbfReader = new InvoiceDbfReader();
-
-    private CopyInvoice() {
-    }
-
-    public static CopyInvoice getInstance() {
-        return copyInvoice;
-    }
 
     public static void main(String[] args) {
 
-        CopyInvoice.getInstance().doCopyNewRecord();
+        new CopyInvoice().doCopyNewRecord();
 
     }
 
     public void doCopyNewRecord() {
         long start = System.currentTimeMillis();
         log.info("Start writing 'I N V O I C E'.");
+
+        UtilDao utilDao = new UtilDao();
+        Connection connPostgres = utilDao.getConnPostgres();
+        Connection connDbf = utilDao.getConnDbf();
+
+        StatusDao statusDao = new StatusDaoJdbc(connPostgres);
+        InvoiceDao invoiceDao = new InvoiceDaoJdbc(connPostgres);
+        OrderDao orderDao = new OrderDaoJdbc(connPostgres);
+
+        JournalDbf journalDbfReader = new JournalDbfReader(connDbf);
+        InvoiceDbf invoiceDbfReader = new InvoiceDbfReader(connDbf);
 
         List<String> listIdOrder = orderDao.getAllId();
         Map<String, Journal> mapJournal = journalDbfReader.getAllJournal();
@@ -107,6 +105,9 @@ public class CopyInvoice {
 
         long end = System.currentTimeMillis();
         log.info("End writing 'I N V O I C E'. Time = {} c.", (double)(end-start)/1000);
+
+        utilDao.closeConnection(connPostgres);
+        utilDao.closeConnection(connDbf);
     }
 
 

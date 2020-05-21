@@ -9,6 +9,7 @@ import kiyv.domain.model.Client;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -18,27 +19,34 @@ import static kiyv.log.ClassNameUtil.getCurrentClassName;
 
 public class CopyClient {
 
-    private static final CopyClient copyClient = new CopyClient();
-    private static final ClientDao clientDao = new ClientDaoJdbc(UtilDao.getConnPostgres());
-    private static final ClientDbf clientDbfReader = new ClientDbfReader();
+//    private static Connection connPostgres;
+//    private static CopyClient copyClient;// = new CopyClient();
+//    private static ClientDao clientDao;// = new ClientDaoJdbc(UtilDao.getConnPostgres());
+//    private static ClientDbf clientDbfReader;// = new ClientDbfReader();
     private static final Logger log = LoggerFactory.getLogger(getCurrentClassName());
 
-    private CopyClient() {
-    }
-
-    public static CopyClient getInstance() {
-        return copyClient;
-    }
+//    public CopyClient() {
+//        UtilDao utilDao = new UtilDao();
+//        connPostgres = utilDao.getConnPostgres();
+//        copyClient = new CopyClient();
+//        clientDao = new ClientDaoJdbc(connPostgres);
+//    }
 
     public static void main(String[] args) {
 
-        CopyClient.getInstance().copyNewRecord();
+        new CopyClient().copyNewRecord();
 
     }
 
     public void copyNewRecord() {
         long start = System.currentTimeMillis();
         log.info("Start writing 'C L I E N T S'.");
+
+        UtilDao utilDao = new UtilDao();
+        Connection connPostgres = utilDao.getConnPostgres();
+        Connection connDbf = utilDao.getConnDbf();
+        ClientDao clientDao = new ClientDaoJdbc(connPostgres);
+        ClientDbf clientDbfReader = new ClientDbfReader(connDbf);
 
         List<Client> listNewClient = new ArrayList<>();
         List<Client> listUpdatingClient = new ArrayList<>();
@@ -76,5 +84,8 @@ public class CopyClient {
 
         long end = System.currentTimeMillis();
         log.info("End writing 'C L I E N T S'. Time = {} c.", (double)(end-start)/1000);
+
+        utilDao.closeConnection(connPostgres);
+        utilDao.closeConnection(connDbf);
     }
 }

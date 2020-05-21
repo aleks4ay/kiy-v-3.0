@@ -14,7 +14,7 @@ import static kiyv.log.ClassNameUtil.getCurrentClassName;
 
 public class DescriptionDaoJdbc implements DescriptionDao {
 
-    private static Connection connPostgres;
+    private Connection connPostgres;
     private static final Logger log = LoggerFactory.getLogger(getCurrentClassName());
     private static final String SQL_GET_ONE = "SELECT * FROM descriptions WHERE id = ?;";
     private static final String SQL_GET_ALL = "SELECT * FROM descriptions;";
@@ -25,7 +25,7 @@ public class DescriptionDaoJdbc implements DescriptionDao {
             "size_a=?, size_b=?, size_c=?, embodiment=? WHERE id = ?;";
 
     public DescriptionDaoJdbc(Connection conn) {
-        connPostgres = conn;
+        this.connPostgres = conn;
         log.debug("Get connection to PostgreSQL from {}.", UtilDao.class);
     }
 

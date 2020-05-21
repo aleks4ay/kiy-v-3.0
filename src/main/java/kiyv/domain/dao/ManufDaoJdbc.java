@@ -14,7 +14,7 @@ import static kiyv.log.ClassNameUtil.getCurrentClassName;
 
 public class ManufDaoJdbc implements ManufDao {
 
-    private static Connection connPostgres;
+    private Connection connPostgres;
     private static final Logger log = LoggerFactory.getLogger(getCurrentClassName());
     private static final String SQL_GET_ONE = "SELECT * FROM manufacture WHERE id = ?;";
     private static final String SQL_GET_ALL = "SELECT * FROM manufacture;";
@@ -28,7 +28,7 @@ public class ManufDaoJdbc implements ManufDao {
             " time21=?, quantity=?, id_tmc=?, descr_second=?, size_a=?, size_b=?, size_c=?, embodiment=? WHERE id = ?;";
 
     public ManufDaoJdbc(Connection conn) {
-        connPostgres = conn;
+        this.connPostgres = conn;
         log.debug("Get connection to PostgreSQL from {}.", UtilDao.class);
     }
 

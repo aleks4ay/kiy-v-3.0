@@ -12,15 +12,15 @@ import static kiyv.log.ClassNameUtil.getCurrentClassName;
 
 public class StatusCopy {
 
-    private static Connection connPostgresFrom;
-    private static Connection connPostgresTo;
+    private Connection connPostgresFrom;
+    private Connection connPostgresTo;
     private static final Logger log = LoggerFactory.getLogger(getCurrentClassName());
 
     private static final String SQL_GET_ALL = "SELECT * FROM statuses;";
 
     public StatusCopy(Connection connFrom, Connection connTo) {
-        connPostgresFrom = connFrom;
-        connPostgresTo = connTo;
+        this.connPostgresFrom = connFrom;
+        this.connPostgresTo = connTo;
         log.debug("Get 2 connections to PostgreSQL from {}.", UtilDao.class);
     }
 

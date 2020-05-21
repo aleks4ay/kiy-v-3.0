@@ -11,6 +11,7 @@ import kiyv.domain.dbf.*;
 import kiyv.domain.model.Client;
 import kiyv.domain.model.Order;
 
+import java.sql.Connection;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
@@ -21,30 +22,30 @@ import static kiyv.log.ClassNameUtil.getCurrentClassName;
 
 public class CopyOrder {
 
-    private static final CopyOrder copyOrder = new CopyOrder();
-    private static final OrderDao orderDao = new OrderDaoJdbc(UtilDao.getConnPostgres());
-    private static final JournalDbf journalDbfReader = new JournalDbfReader();
-    private static final OrderDbf orderDbfReader = new OrderDbfReader();
-    private static final ClientDbf clientDbfReader = new ClientDbfReader();
-    private static final WorkerDbf managerDbfReader = new WorkerDbfReader();
+
     private static final Logger log = LoggerFactory.getLogger(getCurrentClassName());
 
-    private CopyOrder() {
-    }
-
-    public static CopyOrder getInstance() {
-        return copyOrder;
-    }
 
     public static void main(String[] args) {
 
-        CopyOrder.getInstance().doCopyNewRecord();
+        new CopyOrder().doCopyNewRecord();
 
     }
 
     public void doCopyNewRecord() {
         long start = System.currentTimeMillis();
         log.info("Start writing 'O R D E R S'.");
+
+        UtilDao utilDao = new UtilDao();
+        Connection connPostgres = utilDao.getConnPostgres();
+        Connection connDbf = utilDao.getConnDbf();
+
+        OrderDao orderDao = new OrderDaoJdbc(connPostgres);
+
+        JournalDbf journalDbfReader = new JournalDbfReader(connDbf);
+        OrderDbf orderDbfReader = new OrderDbfReader(connDbf);
+        ClientDbf clientDbfReader = new ClientDbfReader(connDbf);
+        WorkerDbf managerDbfReader = new WorkerDbfReader(connDbf);
 
         Map<String, String> mapManagerName = managerDbfReader.getAll();
         Map<String, String> mapClientName = clientDbfReader.getAll()
@@ -146,5 +147,8 @@ public class CopyOrder {
 
         long end = System.currentTimeMillis();
         log.info("End writing 'O R D E R S'. Time = {} c.", (double)(end-start)/1000);
+
+        utilDao.closeConnection(connPostgres);
+        utilDao.closeConnection(connDbf);
     }
 }

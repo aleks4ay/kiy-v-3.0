@@ -14,7 +14,7 @@ import static kiyv.log.ClassNameUtil.getCurrentClassName;
 
 public class TmcDaoJdbc implements TmcDao {
 
-    private static Connection connPostgres;
+    private Connection connPostgres;
     private static final Logger log = LoggerFactory.getLogger(getCurrentClassName());
     private static final String SQL_GET_ONE = "SELECT * FROM tmc WHERE id = ?;";
     private static final String SQL_GET_ALL = "SELECT * FROM tmc;";
@@ -26,7 +26,7 @@ public class TmcDaoJdbc implements TmcDao {
 
 
     public TmcDaoJdbc(Connection conn) {
-        connPostgres = conn;
+        this.connPostgres = conn;
         log.debug("Get connection to PostgreSQL from {}.", UtilDao.class);
     }
 

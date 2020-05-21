@@ -15,7 +15,7 @@ import static kiyv.log.ClassNameUtil.getCurrentClassName;
 
 public class OrderDaoJdbc implements OrderDao {
 
-    private static Connection connPostgres;
+    private Connection connPostgres;
     private static final Logger log = LoggerFactory.getLogger(getCurrentClassName());
     private static final String SQL_GET_ONE = "SELECT * FROM orders WHERE big_number = ?;";
     private static final String SQL_GET_ALL = "SELECT * FROM orders;";
@@ -39,7 +39,7 @@ public class OrderDaoJdbc implements OrderDao {
             "time22=?, price=?, payment=?, time_manuf=?, time_invoice=? WHERE iddoc = ?;";
 
     public OrderDaoJdbc(Connection conn) {
-        connPostgres = conn;
+        this.connPostgres = conn;
         log.debug("Get connection to PostgreSQL from {}.", UtilDao.class);
     }
 

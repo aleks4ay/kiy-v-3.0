@@ -14,7 +14,7 @@ import static kiyv.log.ClassNameUtil.getCurrentClassName;
 
 public class ClientDaoJdbc implements ClientDao {
 
-    private static Connection connPostgres;
+    private Connection connPostgres;
     private static final Logger log = LoggerFactory.getLogger(getCurrentClassName());
     private static final String SQL_GET_ONE = "SELECT name FROM client WHERE id = ?;";
     private static final String SQL_GET_ALL = "SELECT id, name FROM client;";
@@ -25,7 +25,7 @@ public class ClientDaoJdbc implements ClientDao {
 
 
     public ClientDaoJdbc(Connection conn) {
-        connPostgres = conn;
+        this.connPostgres = conn;
         log.debug("Get connection to PostgreSQL from {}.", UtilDao.class);
     }
 

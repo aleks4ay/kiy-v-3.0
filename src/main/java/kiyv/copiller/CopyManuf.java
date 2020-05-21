@@ -7,6 +7,7 @@ import kiyv.domain.model.Manufacture;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.sql.Connection;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
@@ -17,31 +18,29 @@ import static kiyv.log.ClassNameUtil.getCurrentClassName;
 
 public class CopyManuf {
 
-    private static final CopyManuf copyManuf = new CopyManuf();
     private static final Logger log = LoggerFactory.getLogger(getCurrentClassName());
 
-    private static final StatusDao statusDao = new StatusDaoJdbc(UtilDao.getConnPostgres());
-    private static final ManufDao manufDao = new ManufDaoJdbc(UtilDao.getConnPostgres());
-    private static final OrderDao orderDao = new OrderDaoJdbc(UtilDao.getConnPostgres());
-    private static final JournalDbf journalDbfReader = new JournalDbfReader();
-    private static final ManufDbf manufDbfReader = new ManufDbfReader();
-
-    private CopyManuf() {
-    }
-
-    public static CopyManuf getInstance() {
-        return copyManuf;
-    }
 
     public static void main(String[] args) {
-
-        CopyManuf.getInstance().doCopyNewRecord();
-
+        new CopyManuf().doCopyNewRecord();
     }
+
 
     public void doCopyNewRecord() {
         long start = System.currentTimeMillis();
         log.info("Start writing 'M A N U F A C T U R E'.");
+
+        UtilDao utilDao = new UtilDao();
+        Connection connPostgres = utilDao.getConnPostgres();
+        Connection connDbf = utilDao.getConnDbf();
+
+        StatusDao statusDao = new StatusDaoJdbc(connPostgres);
+        ManufDao manufDao = new ManufDaoJdbc(connPostgres);
+        OrderDao orderDao = new OrderDaoJdbc(connPostgres);
+
+        JournalDbf journalDbfReader = new JournalDbfReader(connDbf);
+        ManufDbf manufDbfReader = new ManufDbfReader(connDbf);
+
 
         List<String> listIdOrder = orderDao.getAllId();
         Map<String, Journal> mapJournal = journalDbfReader.getAllJournal();
@@ -106,5 +105,8 @@ public class CopyManuf {
 
         long end = System.currentTimeMillis();
         log.info("End writing 'M A N U F A C T U R E'. Time = {} c.", (double)(end-start)/1000);
+
+        utilDao.closeConnection(connPostgres);
+        utilDao.closeConnection(connDbf);
     }
 }

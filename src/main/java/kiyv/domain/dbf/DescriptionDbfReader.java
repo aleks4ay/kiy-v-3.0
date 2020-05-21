@@ -17,14 +17,14 @@ import static kiyv.log.ClassNameUtil.getCurrentClassName;
 
 public class DescriptionDbfReader implements DescriptionDbf {
 
-    private static Connection connDbf;
+    private Connection connDbf;
     private static final Logger log = LoggerFactory.getLogger(getCurrentClassName());
     private static final String SQL_GET_DESCRIPTION =
             "select IDDOC, LINENO, SP1902, SP1905, SP14676, SP14686, SP14687, SP14688, SP14717, SP14681 from DT1898;";
     private static final String SQL_GET_EMBODIMENT = "SELECT ID, DESCR from SC14716;";
 
-    public DescriptionDbfReader() {
-        connDbf = UtilDao.getConnDbf();
+    public DescriptionDbfReader(Connection connDbf) {
+        this.connDbf = connDbf;
         log.debug("Get connection to 'dbf-files' 1C from {}.", DescriptionDbfReader.class);
     }
 

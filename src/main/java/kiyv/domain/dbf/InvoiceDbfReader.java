@@ -16,12 +16,12 @@ import static kiyv.log.ClassNameUtil.getCurrentClassName;
 
 public class InvoiceDbfReader implements InvoiceDbf {
 
-    private static Connection connDbf;
+    private Connection connDbf;
     private static final Logger log = LoggerFactory.getLogger(getCurrentClassName());
     private static final String SQL_GET_INVOICE ="SELECT IDDOC,SP3561,SP3589 from  DH3592 WHERE SP3561 <>'   0     0';";
 
-    public InvoiceDbfReader() {
-        connDbf = UtilDao.getConnDbf();
+    public InvoiceDbfReader(Connection connDbf) {
+        this.connDbf = connDbf;
         log.debug("Get connection to 'dbf-files' 1C from {}.", InvoiceDbfReader.class);
     }
 

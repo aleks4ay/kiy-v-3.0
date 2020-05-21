@@ -14,9 +14,9 @@ import java.util.Properties;
 import static kiyv.log.ClassNameUtil.getCurrentClassName;
 
 public class UtilDao {
-    private static Connection connDbf = null;
-    private static Connection connPostgres = null;
-    private static Connection connTest = null;
+//    private Connection connDbf = null;
+//    private Connection connPostgres = null;
+//    private Connection connTest = null;
     private static final Logger log = LoggerFactory.getLogger(getCurrentClassName());
 
     private static String driverDbf = null;
@@ -57,53 +57,66 @@ public class UtilDao {
         }
     }
 
-    public static Connection getConnDbf() {
+    public Connection getConnDbf() {
         try {
             Class.forName(driverDbf);
-            connDbf = DriverManager.getConnection(urlDbf);
+            Connection connDbf = DriverManager.getConnection(urlDbf);
             log.debug("Created connection for 'dbf-files' from 1C. Url= {}.", urlDbf);
+            return connDbf;
         } catch (SQLException | ClassNotFoundException e) {
             log.warn("Exception during create connection for 'dbf-files' from 1C. Url= {}.", urlDbf, e);
         }
-        return connDbf;
+        return null;
     }
 
-    public static Connection getConnPostgres() {
+    public Connection getConnPostgres() {
         try {
             Class.forName(driverPostgres);
-            connPostgres = DriverManager.getConnection(urlPostgres, user, password);
+            Connection connPostgres = DriverManager.getConnection(urlPostgres, user, password);
             connPostgres.setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
             connPostgres.setAutoCommit(false);
             log.debug("Created connection for 'postgres'. Url= {}, user= {}.", urlPostgres, user);
+            return connPostgres;
         } catch (SQLException | ClassNotFoundException e) {
             log.warn("Exception during create connection for 'postgres' url= {}, user= {}.", urlPostgres, user, e);
         }
-        return connPostgres;
+        return null;
     }
 
-    public static Connection getConnPostgresFrom() {
+    public Connection getConnPostgresFrom() {
         try {
             Class.forName(driverPostgres);
-            connPostgres = DriverManager.getConnection(urlPostgresFrom, user, password);
+            Connection connPostgres = DriverManager.getConnection(urlPostgresFrom, user, password);
             connPostgres.setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
             connPostgres.setAutoCommit(false);
             log.debug("Created connection for 'postgres'. Url= {}, user= {}.", urlPostgresFrom, user);
+            return connPostgres;
         } catch (SQLException | ClassNotFoundException e) {
             log.warn("Exception during create connection for 'postgres' url= {}, user= {}.", urlPostgresFrom, user, e);
         }
-        return connPostgres;
+        return null;
     }
 
-    public static Connection getConnTest() {
+    public Connection getConnTest() {
         try {
             Class.forName(driverPostgres);
-            connTest = DriverManager.getConnection(urlTest, userTest, passwordTest);
+            Connection connTest = DriverManager.getConnection(urlTest, userTest, passwordTest);
             connTest.setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
             connTest.setAutoCommit(false);
             log.debug("Created connection for 'postgres'. Url= {}, user= {}.", urlTest, userTest);
+            return connTest;
         } catch (SQLException | ClassNotFoundException e) {
             log.warn("Exception during create connection for 'postgres' url= {}, user= {}.", urlTest, userTest, e);
         }
-        return connTest;
+        return null;
+    }
+
+    public void closeConnection(Connection conn) {
+        try {
+            log.debug("Closing connection {}.", conn);
+            conn.close();
+        } catch (SQLException e) {
+            log.warn("Exception during Closing connection {}.", conn, e);
+        }
     }
 }

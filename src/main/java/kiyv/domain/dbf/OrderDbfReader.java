@@ -13,13 +13,13 @@ import static kiyv.log.ClassNameUtil.getCurrentClassName;
 
 public class OrderDbfReader implements OrderDbf {
 
-    private static Connection connDbf;
+    private Connection connDbf;
     private static final Logger log = LoggerFactory.getLogger(getCurrentClassName());
     private static final String SQL_GET_ORDER = "SELECT IDDOC, SP1899, SP14836, SP14695, SP14680, SP14684 " +
             "from DH1898 WHERE SP14694 = 1;";
 
-    public OrderDbfReader() {
-        connDbf = UtilDao.getConnDbf();
+    public OrderDbfReader(Connection connDbf) {
+        this.connDbf = connDbf;
         log.debug("Get connection to 'dbf-files' 1C from {}.", OrderDbfReader.class);
     }
 

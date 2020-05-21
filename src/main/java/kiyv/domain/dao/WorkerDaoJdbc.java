@@ -14,7 +14,7 @@ import static kiyv.log.ClassNameUtil.getCurrentClassName;
 
 public class WorkerDaoJdbc implements WorkerDao {
 
-    private static Connection connPostgres;
+    private Connection connPostgres;
     private static final Logger log = LoggerFactory.getLogger(getCurrentClassName());
     private static final String SQL_GET_ONE = "SELECT name FROM worker WHERE id = ?;";
     private static final String SQL_GET_ALL = "SELECT id, name FROM worker;";
@@ -24,7 +24,7 @@ public class WorkerDaoJdbc implements WorkerDao {
 
 
     public WorkerDaoJdbc(Connection conn) {
-        connPostgres = conn;
+        this.connPostgres = conn;
         log.debug("Get connection to PostgreSQL from {}.", UtilDao.class);
     }
 

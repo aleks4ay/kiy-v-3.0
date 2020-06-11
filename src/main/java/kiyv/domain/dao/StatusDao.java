@@ -13,6 +13,8 @@ public interface StatusDao {
 
     List<Status> getAll();
 
+    boolean updateBeginValue(List<Status> statusList);
+
     boolean saveAll(List<Status> statusList);
 
     boolean updateAll(List<Status> statusList);

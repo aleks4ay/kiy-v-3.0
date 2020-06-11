@@ -21,7 +21,7 @@ public class DescriptionDbfReader implements DescriptionDbf {
     private static final Logger log = LoggerFactory.getLogger(getCurrentClassName());
     private static final String SQL_GET_DESCRIPTION =
             "select IDDOC, LINENO, SP1902, SP1905, SP14676, SP14686, SP14687, SP14688, SP14717, SP14681 from DT1898;";
-    private static final String SQL_GET_EMBODIMENT = "SELECT ID, DESCR from SC14716;";
+//    private static final String SQL_GET_EMBODIMENT = "SELECT ID, DESCR from SC14716;";
 
     public DescriptionDbfReader(Connection connDbf) {
         this.connDbf = connDbf;
@@ -31,8 +31,7 @@ public class DescriptionDbfReader implements DescriptionDbf {
 
     @Override
     public List<Description> getAll() {
-        Map<String, String> mapEmbodiment = new HashMap<>();
-        List<Description> result = new ArrayList<>();
+/*        Map<String, String> mapEmbodiment = new HashMap<>();
 
         try (Statement st = connDbf.createStatement()) {
             ResultSet rs1 = st.executeQuery(SQL_GET_EMBODIMENT);
@@ -54,7 +53,9 @@ public class DescriptionDbfReader implements DescriptionDbf {
 
         } catch (Exception e) {
             log.warn("Exception during reading all rows 'Journal'. SQL = {}.", SQL_GET_DESCRIPTION, e);
-        }
+        }*/
+
+        List<Description> result = new ArrayList<>();
 
         try (Statement st = connDbf.createStatement()) {
             //Get  IDDOC, LINENO, SP1902, SP1905, SP14676, SP14686, SP14687, SP14688, SP14717, SP14681

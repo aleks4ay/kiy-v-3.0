@@ -23,6 +23,9 @@ public class StatusDaoJdbc implements StatusDao {
     private static final Logger log = LoggerFactory.getLogger(getCurrentClassName());
     private static final String SQL_INSERT_BEGIN_VALUE = "INSERT INTO statuses (id, iddoc, time_0, time_1, type_index, " +
             "status_index, is_technologichka, descr_first)  VALUES (?, ?, ?, ?, ?, ?, ?, ?);";
+
+    private static final String SQL_UPDATE_BEGIN_VALUE = "UPDATE statuses SET descr_first=?, time_1=? WHERE id=? AND iddoc=?;";
+
     private static final String SQL_GET_ONE = "SELECT * FROM statuses WHERE id = ?;";
     private static final String SQL_GET_ALL = "SELECT * FROM statuses;";
     private static final String SQL_DELETE = "DELETE FROM statuses WHERE id = ?;";
@@ -89,7 +92,6 @@ public class StatusDaoJdbc implements StatusDao {
 
             while (rs.next()) {
                 String id = rs.getString("id");
-//                log.debug("return new 'Status'. Id = '{}'.", id);
 
                 long[] statusTimeList = new long[25];
                 for (int i = 0; i < 25; i++) {
@@ -144,6 +146,40 @@ public class StatusDaoJdbc implements StatusDao {
             }
         } catch (SQLException e) {
             log.warn("Exception during save/update {} new 'Statuses'. SQL = {}.", statusList.size() , SQL_INSERT_BEGIN_VALUE, e);
+        }
+        return false;
+    }
+
+    @Override
+    public boolean updateBeginValue(List<Status> statusList) {
+        try {
+            int result = 0;
+            for (Status status : statusList) {
+                PreparedStatement ps = connPostgres.prepareStatement(SQL_UPDATE_BEGIN_VALUE);
+
+                log.debug("Prepared 'Status' to batch. SQL = {}. {}.", SQL_UPDATE_BEGIN_VALUE, status);
+
+                ps.setString(1, status.getDescrFirst());
+                ps.setLong(2, DateConverter.getNowDate());
+                ps.setString(3, status.getId());
+                ps.setString(4, status.getIdDoc());
+
+                ps.addBatch();
+                int[] numberOfUpdates = ps.executeBatch();
+                result += IntStream.of(numberOfUpdates).sum();
+            }
+            if (result == statusList.size()) {
+                log.debug("Try commit");
+                connPostgres.commit();
+                log.debug("Commit - OK. {} Statuses updated.", result);
+                return true;
+            }
+            else {
+                log.debug("Updated {}, but need to update {} Statuses. Not equals!!!", result, statusList.size());
+                connPostgres.rollback();
+            }
+        } catch (SQLException e) {
+            log.warn("Exception during update {}  'Statuses'. SQL = {}.", statusList.size() , SQL_UPDATE_BEGIN_VALUE, e);
         }
         return false;
     }

@@ -33,14 +33,14 @@ public class EmbodimentDbfReader implements EmbodimentDbf {
             ResultSet rs = st.executeQuery(SQL_GET_EMBODIMENT);
             log.debug("Select all 'Embodiment' from 1C. SQL = {}.", SQL_GET_EMBODIMENT);
             while (rs.next()) {
-                String name = rs.getString(2);
-                if (name != null) {
+                String descr = rs.getString(2);
+                if (descr != null) {
                     byte[] bytes = rs.getBytes(2);
-                    name = new String(bytes, "Windows-1251");
+                    descr = new String(bytes, "Windows-1251");
                 } else {
-                    name = "-";
+                    descr = "";
                 }
-                mapEmbodiment.put(rs.getString(1), name);
+                mapEmbodiment.put(rs.getString(1), descr);
             }
             log.debug("Was read {} Embodiment.", mapEmbodiment.size());
             return mapEmbodiment;

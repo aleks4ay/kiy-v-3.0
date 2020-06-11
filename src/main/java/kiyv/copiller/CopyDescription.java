@@ -20,14 +20,6 @@ import static kiyv.log.ClassNameUtil.getCurrentClassName;
 
 public class CopyDescription {
 
-//    private static final CopyDescription copyDescription = new CopyDescription();
-//    private static final OrderDao orderDao = new OrderDaoJdbc(UtilDao.getConnPostgres());
-//    private static final TmcDao tmcDao = new TmcDaoJdbc(UtilDao.getConnPostgres());
-//    private static final TmcDao tmcDaoTechno = new TmcDaoTechnoJdbc(UtilDao.getConnPostgres());
-//    private static final DescriptionDao descriptionDao = new DescriptionDaoJdbc(UtilDao.getConnPostgres());
-//    private static final StatusDao statusDao = new StatusDaoJdbc(UtilDao.getConnPostgres());
-//    private static final DescriptionDbf descriptionDbfReader = new DescriptionDbfReader();
-//    private static final EmbodimentDbf embodimentDbfReader = new EmbodimentDbfReader();
     private static final Logger log = LoggerFactory.getLogger(getCurrentClassName());
 
     public static void main(String[] args) {
@@ -54,7 +46,7 @@ public class CopyDescription {
         EmbodimentDbf embodimentDbfReader = new EmbodimentDbfReader(connDbf);
 
         Map<String, String> mapEmbodiment = embodimentDbfReader.getAll();
-//        List<String> idDocList = orderDao.getAllId();
+
         Map<String, Timestamp> mapDateToFactory = orderDao.getAllDateToFactory();
         Map<String, Tmc> mapTmc = tmcDao.getAll()
                 .stream()
@@ -70,6 +62,7 @@ public class CopyDescription {
         List<Description> listNewDescription = new ArrayList<>();
         List<Description> listUpdatingDescription = new ArrayList<>();
         List<Status> listNewStatuses = new ArrayList<>();
+        List<Status> listUpdatingStatuses = new ArrayList<>();
 
         Map<String, Description> mapOldDescription = descriptionDao.getAll()
                 .stream()
@@ -86,7 +79,7 @@ public class CopyDescription {
                     newDescription.setEmbodiment(mapEmbodiment.get(codeEmbodiment));
                 }
                 else {
-                    newDescription.setEmbodiment("-");
+                    newDescription.setEmbodiment("");
                 }
 
                 long[] statusTimeList = new long[25];
@@ -96,11 +89,9 @@ public class CopyDescription {
                 statusTimeList[0] = mapDateToFactory.get(newDescription.getIdDoc()).getTime();
                 statusTimeList[1] = DateConverter.getNowDate();
 
-//                String embodiment = newDescription.getEmbodiment();
-
                 String descrFirst = mapTmc.get(newDescription.getIdTmc()).getDescr();
 
-                if ( ! codeEmbodiment.trim().equals("-")) {
+                if ( ! codeEmbodiment.trim().equals("")) {
                     descrFirst += newDescription.getEmbodiment() + " ";
                 }
                 int typeIndex = 0;
@@ -125,6 +116,7 @@ public class CopyDescription {
                             newDescription.getDifferences(mapOldDescription.get(newDescriptionCode))
                     );
                     listUpdatingDescription.add(newDescription);
+                    listUpdatingStatuses.add(newDescription.getStatus());
                     mapOldDescription.remove(newDescriptionCode);
                 }
                 else {
@@ -141,6 +133,7 @@ public class CopyDescription {
         if (listUpdatingDescription.size() > 0) {
             log.info("Write change to DataBase. Must be updated {} Descriptions.", listUpdatingDescription.size());
             descriptionDao.updateAll(listUpdatingDescription);
+            statusDao.updateBeginValue(listUpdatingStatuses);
         }
         if (mapOldDescription.size() > 0) {
             log.info("Delete old Description from DataBase. Must be deleted {} Description.", mapOldDescription.size());

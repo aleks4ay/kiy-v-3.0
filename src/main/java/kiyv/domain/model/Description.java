@@ -148,35 +148,38 @@ public class Description {
     public String getDifferences(Description description) {
         String result = "";
         if (! this.id.equals(description.id)) {
-            result += "id [" + description.id + "--> " + this.id + "] ";
+            result += "id ['" + description.id + "' --> '" + this.id + "'] ";
         }
         if (! this.idDoc.equals(description.idDoc) ) {
-            result += "idDoc [" + description.idDoc + "--> " + this.idDoc + "] ";
+            result += "idDoc ['" + description.idDoc + "' --> '" + this.idDoc + "'] ";
         }
         if (this.position != description.position) {
-            result += "position [" + description.position + "--> " + this.position + "] ";
+            result += "position ['" + description.position + "' --> '" + this.position + "'] ";
         }
         if (! this.idTmc.equals(description.idTmc) ) {
-            result += "idTmc [" + description.idTmc + "--> " + this.idTmc + "] ";
+            result += "idTmc ['" + description.idTmc + "' --> '" + this.idTmc + "'] ";
         }
         if (this.quantity != description.quantity) {
-            result += "quantity [" + description.quantity + "--> " + this.quantity + "] ";
+            result += "quantity ['" + description.quantity + "' --> '" + this.quantity + "'] ";
         }
         if (! this.descrSecond.equals(description.descrSecond) ) {
-            result += "descrSecond [" + description.descrSecond + "--> " + this.descrSecond + "] ";
+            result += "descrSecond ['" + description.descrSecond + "' --> '" + this.descrSecond + "'] ";
         }
         if (this.sizeA != description.sizeA) {
-            result += "sizeA [" + description.sizeA + "--> " + this.sizeA + "] ";
+            result += "sizeA ['" + description.sizeA + "' --> '" + this.sizeA + "'] ";
         }
         if (this.sizeB != description.sizeB) {
-            result += "sizeB [" + description.sizeB + "--> " + this.sizeB + "] ";
+            result += "sizeB ['" + description.sizeB + "' --> '" + this.sizeB + "'] ";
         }
         if (this.sizeC != description.sizeC) {
-            result += "sizeC [" + description.sizeC + "--> " + this.sizeC + "] ";
+            result += "sizeC ['" + description.sizeC + "' --> '" + this.sizeC + "'] ";
         }
         if (! this.embodiment.equals(description.embodiment) ) {
-            result += "embodiment [" + description.embodiment + "--> " + this.embodiment + "] ";
+            result += "embodiment ['" + description.embodiment + "' --> '" + this.embodiment + "'] ";
         }
+//        if (! this.status.getDescrFirst().equals(description.status.getDescrFirst()) ) {
+//            result += "descrFirst ['" + description.status.getDescrFirst() + "' --> '" + this.status.getDescrFirst() + "'] ";
+//        }
 
         return result;
     }
@@ -189,6 +192,7 @@ public class Description {
                 ", position=" + position +
                 ", idTmc='" + idTmc + '\'' +
                 ", quantity=" + quantity +
+                ", descrFirst='" + status.getDescrFirst() + '\'' +
                 ", descrSecond='" + descrSecond + '\'' +
                 ", sizeA=" + sizeA +
                 ", sizeB=" + sizeB +

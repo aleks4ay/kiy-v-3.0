@@ -32,11 +32,11 @@ public class StatusDaoJdbc implements StatusDao {
 
     private static final String SQL_UPDATE_TIME_FROM_MANUF = "UPDATE statuses SET time_21 =? WHERE iddoc=?;";
     private static final String SQL_UPDATE_STATUS_FROM_MANUF = "UPDATE statuses SET status_index = 21 WHERE time_21 " +
-            "NOTNULL and status_index < 21 ;";
+            "NOTNULL and status_index < 21 AND status_index > 6 ;";
 
     private static final String SQL_UPDATE_TIME_FROM_INVOICE = "UPDATE statuses SET time_22 =? WHERE iddoc=?;";
     private static final String SQL_UPDATE_STATUS_FROM_INVOICE = "UPDATE statuses SET status_index = 22 WHERE " +
-            "time_22 NOTNULL and status_index < 22 ;";
+            "time_22 NOTNULL and status_index < 22  AND status_index > 6 ;";
 
     private static final String SQL_SAVE = "INSERT INTO statuses (iddoc, time_0, time_1, time_2, time_3, time_4, " +
             "time_5, time_6, time_7, time_8, time_9, time_10, time_11, time_12, time_13, time_14, time_15, time_16, " +

@@ -64,7 +64,7 @@ public class TmcDaoTechnoJdbc implements TmcDao {
                 tmc.setDescr(rs.getString("descr"));
                 result.add(tmc);
             }
-            log.debug("Was read {} Tmc-techno.", result.size());
+            log.debug("Was read {} Tmc-techno from Postgres.", result.size());
             return result;
         } catch (SQLException e) {
             log.warn("Exception during reading all 'Tmc-techno'.", e);

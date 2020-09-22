@@ -4,15 +4,11 @@ import kiyv.domain.dao.TmcDao;
 import kiyv.domain.dao.TmcDaoJdbc;
 import kiyv.domain.dao.TmcDaoTechnoJdbc;
 import kiyv.domain.dao.UtilDao;
-import kiyv.domain.dbf.TmcDbf;
-import kiyv.domain.dbf.TmcDbfReader;
 import kiyv.domain.model.Tmc;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
 import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.*;
 import java.util.stream.Collectors;
 

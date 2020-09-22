@@ -62,7 +62,7 @@ public class TmcDaoJdbc implements TmcDao {
                 result.add(new Tmc(rs.getString("id"), rs.getString("id_parent"), rs.getString("code"), rs.getString("descr"),
                         rs.getInt("is_folder"), rs.getString("descr_all"), rs.getString("type")));
             }
-            log.debug("Was read {} Tmc.", result.size());
+            log.debug("Was read {} Tmc from Postgres.", result.size());
             return result;
         } catch (SQLException e) {
             log.warn("Exception during reading all 'Tmc'.", e);

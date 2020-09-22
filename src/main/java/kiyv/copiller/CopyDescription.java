@@ -1,7 +1,8 @@
 package kiyv.copiller;
 
 import kiyv.domain.dao.*;
-import kiyv.domain.dbf.*;
+import kiyv.domain.javadbf.DescriptionReader;
+import kiyv.domain.javadbf.EmbodimentReader;
 import kiyv.domain.model.Description;
 import kiyv.domain.model.Status;
 import kiyv.domain.model.Tmc;
@@ -23,9 +24,7 @@ public class CopyDescription {
     private static final Logger log = LoggerFactory.getLogger(getCurrentClassName());
 
     public static void main(String[] args) {
-
         new CopyDescription().doCopyNewRecord();
-
     }
 
     public void doCopyNewRecord() {
@@ -34,7 +33,7 @@ public class CopyDescription {
 
         UtilDao utilDao = new UtilDao();
         Connection connPostgres = utilDao.getConnPostgres();
-        Connection connDbf = utilDao.getConnDbf();
+//        Connection connDbf = utilDao.getConnDbf();
 
         OrderDao orderDao = new OrderDaoJdbc(connPostgres);
         TmcDao tmcDao = new TmcDaoJdbc(connPostgres);
@@ -42,10 +41,10 @@ public class CopyDescription {
         DescriptionDao descriptionDao = new DescriptionDaoJdbc(connPostgres);
         StatusDao statusDao = new StatusDaoJdbc(connPostgres);
 
-        DescriptionDbf descriptionDbfReader = new DescriptionDbfReader(connDbf);
-        EmbodimentDbf embodimentDbfReader = new EmbodimentDbfReader(connDbf);
+        DescriptionReader descriptionReader = new DescriptionReader();
+        EmbodimentReader embodimentReader = new EmbodimentReader();
 
-        Map<String, String> mapEmbodiment = embodimentDbfReader.getAll();
+        Map<String, String> mapEmbodiment = embodimentReader.getAllEmbodiment();
 
         Map<String, Timestamp> mapDateToFactory = orderDao.getAllDateToFactory();
         Map<String, Tmc> mapTmc = tmcDao.getAll()
@@ -57,7 +56,7 @@ public class CopyDescription {
             listIdTmcTechno.add(tmc.getId());
         }
 
-        List<Description> listDescription = descriptionDbfReader.getAll();
+        List<Description> listDescription = descriptionReader.getAll();
 
         List<Description> listNewDescription = new ArrayList<>();
         List<Description> listUpdatingDescription = new ArrayList<>();
@@ -147,6 +146,6 @@ public class CopyDescription {
         log.info("End writing 'D E S C R I P T I O N'. Time = {} c.", (double)(end-start)/1000);
 
         utilDao.closeConnection(connPostgres);
-        utilDao.closeConnection(connDbf);
+//        utilDao.closeConnection(connDbf);
     }
 }

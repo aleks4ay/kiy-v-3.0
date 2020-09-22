@@ -74,7 +74,7 @@ public class ManufDaoJdbc implements ManufDao {
                         rs.getInt("size_b"), rs.getInt("size_c"), rs.getString("embodiment"));
                 result.add(manufacture);
             }
-            log.debug("Was read {} Manufactures.", result.size());
+            log.debug("Was read {} Manufactures from Postgres.", result.size());
             return result;
         } catch (SQLException e) {
             log.warn("Exception during reading all 'Manufactures'.", e);

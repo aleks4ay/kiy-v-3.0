@@ -103,7 +103,7 @@ public class StatusDaoJdbc implements StatusDao {
 
                 result.add(status);
             }
-            log.debug("Was read {} Statuses.", result.size());
+            log.debug("Was read {} Statuses from Postgres.", result.size());
             return result;
         } catch (SQLException e) {
             log.warn("Exception during reading all 'Statuses'.", e);

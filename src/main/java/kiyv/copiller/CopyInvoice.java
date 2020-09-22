@@ -1,7 +1,8 @@
 package kiyv.copiller;
 
 import kiyv.domain.dao.*;
-import kiyv.domain.dbf.*;
+import kiyv.domain.javadbf.InvoiceReader;
+import kiyv.domain.javadbf.JournalReader;
 import kiyv.domain.model.Invoice;
 import kiyv.domain.model.Journal;
 import org.slf4j.Logger;
@@ -22,9 +23,7 @@ public class CopyInvoice {
     private static final Logger log = LoggerFactory.getLogger(getCurrentClassName());
 
     public static void main(String[] args) {
-
         new CopyInvoice().doCopyNewRecord();
-
     }
 
     public void doCopyNewRecord() {
@@ -33,18 +32,17 @@ public class CopyInvoice {
 
         UtilDao utilDao = new UtilDao();
         Connection connPostgres = utilDao.getConnPostgres();
-        Connection connDbf = utilDao.getConnDbf();
 
         StatusDao statusDao = new StatusDaoJdbc(connPostgres);
         InvoiceDao invoiceDao = new InvoiceDaoJdbc(connPostgres);
         OrderDao orderDao = new OrderDaoJdbc(connPostgres);
 
-        JournalDbf journalDbfReader = new JournalDbfReader(connDbf);
-        InvoiceDbf invoiceDbfReader = new InvoiceDbfReader(connDbf);
+        JournalReader journalReader = new JournalReader();
+        InvoiceReader invoiceReader = new InvoiceReader();
 
         List<String> listIdOrder = orderDao.getAllId();
-        Map<String, Journal> mapJournal = journalDbfReader.getAllJournal();
-        Map<String, Invoice> mapInvoice = invoiceDbfReader.getAll();
+        Map<String, Journal> mapJournal = journalReader.getAllJournal();
+        Map<String, Invoice> mapInvoice = invoiceReader.getAll();
 
         List<Invoice> listNewInvoice = new ArrayList<>();
         List<Invoice> listUpdatingInvoice = new ArrayList<>();
@@ -54,7 +52,6 @@ public class CopyInvoice {
                 .collect(Collectors.toMap(Invoice::getIdDoc, Invoice::getInvoice));
 
         for (Invoice invoice : mapInvoice.values()) {
-//            String id = invoice.getIdDoc();
             String idDoc = invoice.getIdDoc();
             String idOrder = invoice.getIdOrder();
 
@@ -107,7 +104,6 @@ public class CopyInvoice {
         log.info("End writing 'I N V O I C E'. Time = {} c.", (double)(end-start)/1000);
 
         utilDao.closeConnection(connPostgres);
-        utilDao.closeConnection(connDbf);
     }
 
 

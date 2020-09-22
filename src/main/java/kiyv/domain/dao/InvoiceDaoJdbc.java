@@ -69,7 +69,7 @@ public class InvoiceDaoJdbc implements InvoiceDao {
                         rs.getLong("time22"), rs.getDouble("price"));
                 result.add(invoice);
             }
-            log.debug("Was read {} Invoices.", result.size());
+            log.debug("Was read {} Invoices from Postgres.", result.size());
             return result;
         } catch (SQLException e) {
             log.warn("Exception during reading all 'Invoices'.", e);

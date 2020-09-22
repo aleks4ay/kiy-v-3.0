@@ -1,12 +1,11 @@
 package kiyv.copiller;
 
+import kiyv.domain.javadbf.TmcReader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import kiyv.domain.dao.UtilDao;
 import kiyv.domain.dao.TmcDao;
 import kiyv.domain.dao.TmcDaoJdbc;
-import kiyv.domain.dbf.TmcDbf;
-import kiyv.domain.dbf.TmcDbfReader;
 import kiyv.domain.model.Tmc;
 
 import java.sql.Connection;
@@ -31,10 +30,9 @@ public class CopyTmc {
 
         UtilDao utilDao = new UtilDao();
         Connection connPostgres = utilDao.getConnPostgres();
-        Connection connDbf = utilDao.getConnDbf();
 
         TmcDao tmcDao = new TmcDaoJdbc(connPostgres);
-        TmcDbf tmcDbfReader = new TmcDbfReader(connDbf);
+        TmcReader tmcReader = new TmcReader();
 
         List<Tmc> listNewTmc = new ArrayList<>();
         List<Tmc> listUpdatingTmc = new ArrayList<>();
@@ -43,7 +41,7 @@ public class CopyTmc {
                 .stream()
                 .collect(Collectors.toMap(Tmc::getId, Tmc::getTmc));
 
-        List<Tmc> listTmcFrom1C = tmcDbfReader.getAll();
+        List<Tmc> listTmcFrom1C = tmcReader.getAll();
 
         for (Tmc tmc : listTmcFrom1C) {
             String idComparedTmc = tmc.getId();
@@ -75,7 +73,6 @@ public class CopyTmc {
         log.info("End writing 'T M C'. Time = {} c.", (double)(end-start)/1000);
 
         utilDao.closeConnection(connPostgres);
-        utilDao.closeConnection(connDbf);
     }
 }
 

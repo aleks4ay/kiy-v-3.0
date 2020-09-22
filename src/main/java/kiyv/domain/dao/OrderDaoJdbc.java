@@ -85,7 +85,7 @@ public class OrderDaoJdbc implements OrderDao {
 
                 result.add(order);
             }
-            log.debug("Was read {} Orders.", result.size());
+            log.debug("Was read {} Orders from Postgres.", result.size());
             return result;
         } catch (SQLException e) {
             log.warn("Exception during reading all 'Order'.", e);

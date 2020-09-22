@@ -69,7 +69,7 @@ public class DescriptionDaoJdbc implements DescriptionDao {
 
                 result.add(description);
             }
-            log.debug("Was read {} Description.", result.size());
+            log.debug("Was read {} Description from Postgres.", result.size());
             return result;
         } catch (SQLException e) {
             log.warn("Exception during reading all 'Description'.", e);

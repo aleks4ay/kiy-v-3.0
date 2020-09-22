@@ -19,9 +19,9 @@ public class UtilDao {
 //    private Connection connTest = null;
     private static final Logger log = LoggerFactory.getLogger(getCurrentClassName());
 
-    private static String driverDbf = null;
+//    private static String driverDbf = null;
     private static String driverPostgres = null;
-    private static String urlDbf = null;
+//    private static String urlDbf = null;
     private static String urlPostgres = null;
     private static String urlPostgresFrom = null;
     private static String urlTest = null;
@@ -36,8 +36,8 @@ public class UtilDao {
         try (InputStream in = UtilDao.class.getClassLoader().getResourceAsStream("persistence.properties")){
             Properties properties = new Properties();
             properties.load(in);
-            driverDbf = properties.getProperty("dbf.driverClassName");
-            urlDbf = "jdbc:dbf:/" + properties.getProperty("dbf.path");
+//            driverDbf = properties.getProperty("dbf.driverClassName");
+//            urlDbf = "jdbc:dbf:/" + properties.getProperty("dbf.path");
 
             driverPostgres = properties.getProperty("database.driverClassName");
             urlPostgres = properties.getProperty("database.url");
@@ -46,7 +46,7 @@ public class UtilDao {
             password = properties.getProperty("database.password");
             log.debug("Loaded properties as Stream: dbf.driverClassName = {}, dbf.url = {}, database.driverClassName = {}, " +
                             "database.url = {}, database.username = {})",
-                    driverDbf, urlDbf, driverPostgres, urlPostgres, user);
+                    /*driverDbf, urlDbf,*/ driverPostgres, urlPostgres, user);
 
             urlTest = properties.getProperty("db.urlTest");
             userTest = properties.getProperty("db.usernameTest");
@@ -57,7 +57,7 @@ public class UtilDao {
         }
     }
 
-    public Connection getConnDbf() {
+/*    public Connection getConnDbf() {
         try {
             Class.forName(driverDbf);
             Connection connDbf = DriverManager.getConnection(urlDbf);
@@ -67,7 +67,7 @@ public class UtilDao {
             log.warn("Exception during create connection for 'dbf-files' from 1C. Url= {}.", urlDbf, e);
         }
         return null;
-    }
+    }*/
 
     public Connection getConnPostgres() {
         try {

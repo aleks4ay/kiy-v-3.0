@@ -57,7 +57,7 @@ public class WorkerDaoJdbc implements WorkerDao {
             while (rs.next()) {
                 result.add(new Worker( rs.getString("id"), rs.getString("name")));
             }
-            log.debug("Was read {} Workers.", result.size());
+            log.debug("Was read {} Workers from Postgres.", result.size());
             return result;
         } catch (SQLException e) {
             log.warn("Exception during reading all 'Worker'.", e);

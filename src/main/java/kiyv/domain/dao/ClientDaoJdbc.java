@@ -58,7 +58,7 @@ public class ClientDaoJdbc implements ClientDao {
             while (rs.next()) {
                 result.add(new Client( rs.getString("id"), rs.getString("name")));
             }
-            log.debug("Was read {} Clients.", result.size());
+            log.debug("Was read {} Clients from Postgres.", result.size());
             return result;
         } catch (SQLException e) {
             log.warn("Exception during reading all 'Client'.", e);

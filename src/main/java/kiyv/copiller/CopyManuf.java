@@ -1,7 +1,8 @@
 package kiyv.copiller;
 
 import kiyv.domain.dao.*;
-import kiyv.domain.dbf.*;
+import kiyv.domain.javadbf.JournalReader;
+import kiyv.domain.javadbf.ManufReader;
 import kiyv.domain.model.Journal;
 import kiyv.domain.model.Manufacture;
 import org.slf4j.Logger;
@@ -32,19 +33,18 @@ public class CopyManuf {
 
         UtilDao utilDao = new UtilDao();
         Connection connPostgres = utilDao.getConnPostgres();
-        Connection connDbf = utilDao.getConnDbf();
 
         StatusDao statusDao = new StatusDaoJdbc(connPostgres);
         ManufDao manufDao = new ManufDaoJdbc(connPostgres);
         OrderDao orderDao = new OrderDaoJdbc(connPostgres);
 
-        JournalDbf journalDbfReader = new JournalDbfReader(connDbf);
-        ManufDbf manufDbfReader = new ManufDbfReader(connDbf);
+        JournalReader journalReader = new JournalReader();
+        ManufReader manufReader = new ManufReader();
 
 
         List<String> listIdOrder = orderDao.getAllId();
-        Map<String, Journal> mapJournal = journalDbfReader.getAllJournal();
-        Map<String, Manufacture> mapManuf = manufDbfReader.getAll();
+        Map<String, Journal> mapJournal = journalReader.getAllJournal();
+        Map<String, Manufacture> mapManuf = manufReader.getAll();
 
         List<Manufacture> listNewManuf = new ArrayList<>();
         List<Manufacture> listUpdatingManuf = new ArrayList<>();
@@ -107,6 +107,5 @@ public class CopyManuf {
         log.info("End writing 'M A N U F A C T U R E'. Time = {} c.", (double)(end-start)/1000);
 
         utilDao.closeConnection(connPostgres);
-        utilDao.closeConnection(connDbf);
     }
 }

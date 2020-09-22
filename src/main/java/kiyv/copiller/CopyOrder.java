@@ -1,13 +1,17 @@
 package kiyv.copiller;
 
+import kiyv.domain.javadbf.ClientReader;
+import kiyv.domain.javadbf.JournalReader;
+import kiyv.domain.javadbf.OrderReader;
+import kiyv.domain.javadbf.WorkerReader;
 import kiyv.domain.model.Journal;
 import kiyv.domain.tools.DateConverter;
+import kiyv.domain.tools.OrderNumber;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import kiyv.domain.dao.OrderDao;
 import kiyv.domain.dao.OrderDaoJdbc;
 import kiyv.domain.dao.UtilDao;
-import kiyv.domain.dbf.*;
 import kiyv.domain.model.Client;
 import kiyv.domain.model.Order;
 
@@ -22,14 +26,11 @@ import static kiyv.log.ClassNameUtil.getCurrentClassName;
 
 public class CopyOrder {
 
-
     private static final Logger log = LoggerFactory.getLogger(getCurrentClassName());
 
 
     public static void main(String[] args) {
-
         new CopyOrder().doCopyNewRecord();
-
     }
 
     public void doCopyNewRecord() {
@@ -38,22 +39,21 @@ public class CopyOrder {
 
         UtilDao utilDao = new UtilDao();
         Connection connPostgres = utilDao.getConnPostgres();
-        Connection connDbf = utilDao.getConnDbf();
 
         OrderDao orderDao = new OrderDaoJdbc(connPostgres);
 
-        JournalDbf journalDbfReader = new JournalDbfReader(connDbf);
-        OrderDbf orderDbfReader = new OrderDbfReader(connDbf);
-        ClientDbf clientDbfReader = new ClientDbfReader(connDbf);
-        WorkerDbf managerDbfReader = new WorkerDbfReader(connDbf);
+        JournalReader journalReader = new JournalReader();
+        OrderReader orderReader = new OrderReader();
+        ClientReader clientReader = new ClientReader();
+        WorkerReader managerReader = new WorkerReader();
 
-        Map<String, String> mapManagerName = managerDbfReader.getAll();
-        Map<String, String> mapClientName = clientDbfReader.getAll()
+        Map<String, String> mapManagerName = managerReader.getAll();
+        Map<String, String> mapClientName = clientReader.getAll()
                 .stream()
                 .collect(Collectors.toMap(Client::getId, Client::getName));
 
-        Map<String, Journal> mapJournal = journalDbfReader.getAllJournal();
-        Map<String, Order> mapOrder = orderDbfReader.getAll();
+        Map<String, Journal> mapJournal = journalReader.getAllJournal();
+        Map<String, Order> mapOrder = orderReader.getAll();
 
         List<Order> listNewOrder = new ArrayList<>();
         List<Order> listUpdatingOrder = new ArrayList<>();
@@ -74,14 +74,15 @@ public class CopyOrder {
                 Timestamp dateToFactory = newOrder.getDateToFactory();
                 Timestamp dateEnd = newOrder.getDateToShipment();
                 int duration = newOrder.getDurationTime();
-                int bigNumber = (DateConverter.getYearShort(dateCreate.getTime()) ) * 100000 + Integer.valueOf(docNumber.substring(5));
+                int bigNumber = (DateConverter.getYearShort(dateCreate.getTime()) ) * 100000
+                        + OrderNumber.getOrderNumberFromDocNumber(docNumber); //Integer.valueOf(docNumber.substring(5));
 
                 if ( dateToFactory == null) {
                     dateToFactory = dateCreate;
                 }
-/*                if (dateToFactory.getTime() < 1560805200000L) {
-                    continue;
-                }*/
+//                if (dateToFactory.getTime() < 1560805200000L) {
+//                    continue;
+//                }
                 if (dateEnd == null) {
                     Timestamp maximum = dateCreate.after(dateToFactory) ? dateCreate : dateToFactory;
                     dateEnd = new Timestamp(DateConverter.offset(maximum.getTime(), duration));
@@ -149,6 +150,5 @@ public class CopyOrder {
         log.info("End writing 'O R D E R S'. Time = {} c.", (double)(end-start)/1000);
 
         utilDao.closeConnection(connPostgres);
-        utilDao.closeConnection(connDbf);
     }
 }
